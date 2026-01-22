@@ -1,0 +1,47 @@
+# ============================================================
+#  OPLS force field
+# Dielectric constant via dipole fluctuations
+# ============================================================
+
+# ---------- INITIALIZATION ----------
+units           real
+boundary        p p p
+atom_style      full
+
+# ---------- FORCE FIELD (OPLS) ----------
+pair_style      lj/cut/coul/long 12.0 12.0
+bond_style      harmonic
+angle_style     harmonic
+dihedral_style  opls
+improper_style  cvff
+
+pair_modify     mix geometric
+special_bonds   lj/coul 0.0 0.0 0.5
+
+kspace_style    pppm 1.0e-5
+
+# ---------- READ SYSTEM ----------
+read_restart    post_npt.restart
+include         system.in.settings
+
+
+# ============================================================
+# NVT EQUILIBRATION
+# ============================================================
+timestep 1.0
+fix             NVT all nvt temp 298.0 298.0 100.0
+run             1000000   # 1 ns
+write_restart   restart.nvt_final_prod
+
+# ============================================================
+# PRODUCTION: DIELECTRIC CONSTANT
+# ============================================================
+# ---------- Trajectory ----------
+dump TRAJ all dcd 1000 prod_pc.dcd
+dump_modify TRAJ unwrap yes
+# ---------- Run ----------
+thermo          1000
+run 20000000    # 20 ns
+
+write_restart   pc100_prod.restart
+write_data   pc100_prod.data

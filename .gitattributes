@@ -1,0 +1,2 @@
+prod_pc.dcd filter=lfs diff=lfs merge=lfs -text
+dipole_acf.dat filter=lfs diff=lfs merge=lfs -text
