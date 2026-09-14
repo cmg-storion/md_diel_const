@@ -1,0 +1,8 @@
+numpy
+matplotlib
+ase
+MDAnalysis
+molify
+torch
+mace-torch
+jupyter
